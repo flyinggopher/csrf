@@ -1,20 +1,28 @@
-//Copyright (c) 2018. Flying Jamnik Authors
+// Copyright (c) 2018. Flying Jamnik Authors
 // license that can be found in the LICENSE file.
 
 package csrf
 
 import (
 	"encoding/binary"
+	"errors"
 	"math/rand"
+	"sync"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+)
+
+var (
+	InternalServerErr      = errors.New("Internal server error!")
+	UnauthorizedRequestErr = errors.New("Unauthorized request error!")
 )
 
 type CSRF struct {
 	UserID     uint
 	Start, End time.Time
 	Token      string
+	mux        sync.Mutex
 }
 
 func RegisterCSRF(userid uint) *CSRF {
@@ -31,4 +39,12 @@ func (c *CSRF) IsActive() bool {
 
 func (c *CSRF) IsSameToken(token string) bool {
 	return c.Token == token
+}
+
+func (c *CSRF) Lock() {
+	c.mux.Lock()
+}
+
+func (c *CSRF) Unlock() {
+	c.mux.Unlock()
 }
