@@ -12,9 +12,9 @@ import (
 )
 
 type CSRF struct {
-	UserID     uint
-	Start, End time.Time
-	Token      string
+	UserID uint
+	End    time.Time
+	Token  string
 }
 
 func RegisterCSRF(userid uint) *CSRF {
@@ -22,7 +22,7 @@ func RegisterCSRF(userid uint) *CSRF {
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, uint64(randomNumber))
 	token, _ := bcrypt.GenerateFromPassword(b, bcrypt.DefaultCost)
-	return &CSRF{userid, time.Now().UTC(), time.Now().Add(15 * time.Minute).UTC(), string(token)}
+	return &CSRF{userid, time.Now().Add(15 * time.Minute).UTC(), string(token)}
 }
 
 func (c *CSRF) IsActive() bool {
