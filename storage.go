@@ -23,11 +23,9 @@ func (s *Storage) CreateTables() error {
 
 	s.base = database
 
-	for _, table := range tables {
-		_, err = s.base.Exec("CREATE TABLE IF NOT EXISTS csrftokens (userid INTEGER, end DATETIME, token varchar(255));")
-		if err != nil {
-			return err
-		}
+	_, err = s.base.Exec("CREATE TABLE IF NOT EXISTS csrftokens (userid INTEGER, end DATETIME, token varchar(255));")
+	if err != nil {
+		return err
 	}
 
 	return nil
