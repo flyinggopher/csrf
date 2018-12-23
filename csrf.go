@@ -18,6 +18,7 @@ type CSRF struct {
 }
 
 func RegisterCSRF(userid uint) *CSRF {
+	rand.Seed(time.Now().UnixNano())
 	randomNumber := rand.Uint64()
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, uint64(randomNumber))
