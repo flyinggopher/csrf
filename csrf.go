@@ -1,4 +1,4 @@
-// Copyright (c) 2018. Flying Jamnik Authors
+// Copyright (c) 2018. Flying Gopher Authors
 // license that can be found in the LICENSE file.
 
 package csrf
@@ -12,18 +12,18 @@ import (
 )
 
 type CSRF struct {
-	UserID uint
-	End    time.Time
-	Token  string
+	SessionID uint64
+	End       time.Time
+	Token     string
 }
 
-func RegisterCSRF(userid uint) *CSRF {
+func RegisterCSRF(sessionid uint64) *CSRF {
 	rand.Seed(time.Now().UnixNano())
 	randomNumber := rand.Uint64()
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, uint64(randomNumber))
 	token, _ := bcrypt.GenerateFromPassword(b, bcrypt.DefaultCost)
-	return &CSRF{userid, time.Now().Add(15 * time.Minute).UTC(), string(token)}
+	return &CSRF{sessionid, time.Now().Add(15 * time.Minute).UTC(), string(token)}
 }
 
 func (c *CSRF) IsActive() bool {
